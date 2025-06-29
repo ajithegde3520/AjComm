@@ -6,6 +6,7 @@ com/ecomapp/userservice/UserServiceApplication.class
 com/ecomapp/userservice/service/impl/UserServiceImpl.class
 com/ecomapp/userservice/security/CustomUserDetailsService.class
 com/ecomapp/userservice/controller/UserController.class
+com/ecomapp/userservice/controller/WebController.class
 com/ecomapp/userservice/util/JwtUtil.class
 com/ecomapp/userservice/service/UserService.class
 com/ecomapp/userservice/dto/LoginResponse.class
