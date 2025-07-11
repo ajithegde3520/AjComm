@@ -1,5 +1,6 @@
 package com.ecomapp.userservice.dto;
 
+import com.ecomapp.userservice.model.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -26,18 +27,21 @@ public class UserRegistrationRequest {
     
     private String phoneNumber;
     
+    private UserRole role = UserRole.CUSTOMER; // Default role
+    
     // Default constructor
     public UserRegistrationRequest() {}
     
     // Constructor with all fields
     public UserRegistrationRequest(String username, String email, String password, 
-                                 String firstName, String lastName, String phoneNumber) {
+                                 String firstName, String lastName, String phoneNumber, UserRole role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        this.role = role != null ? role : UserRole.CUSTOMER;
     }
     
     // Getters and Setters
@@ -87,5 +91,13 @@ public class UserRegistrationRequest {
     
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+    
+    public UserRole getRole() {
+        return role;
+    }
+    
+    public void setRole(UserRole role) {
+        this.role = role != null ? role : UserRole.CUSTOMER;
     }
 } 

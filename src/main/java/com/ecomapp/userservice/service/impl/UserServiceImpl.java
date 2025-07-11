@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setPhoneNumber(request.getPhoneNumber());
+        user.setRole(request.getRole());
         
         User savedUser = userRepository.save(user);
         return UserResponse.fromUser(savedUser);
@@ -54,22 +55,35 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public LoginResponse login(LoginRequest request) {
+        System.out.println("Login attempt for: " + request.getUsernameOrEmail());
+        
         // Find user by username or email
         User user = userRepository.findByUsernameOrEmail(request.getUsernameOrEmail(), request.getUsernameOrEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid username/email or password"));
+                .orElseThrow(() -> {
+                    System.out.println("User not found: " + request.getUsernameOrEmail());
+                    return new RuntimeException("Invalid username/email or password");
+                });
+        
+        System.out.println("User found: " + user.getUsername() + ", Active: " + user.getIsActive());
         
         // Check if user is active
         if (!user.getIsActive()) {
+            System.out.println("User account is deactivated: " + user.getUsername());
             throw new RuntimeException("User account is deactivated");
         }
         
         // Verify password
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        boolean passwordMatches = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        System.out.println("Password match result: " + passwordMatches);
+        
+        if (!passwordMatches) {
+            System.out.println("Password verification failed for user: " + user.getUsername());
             throw new RuntimeException("Invalid username/email or password");
         }
         
         // Generate JWT token
         String token = jwtUtil.generateToken(user.getUsername());
+        System.out.println("Login successful for user: " + user.getUsername());
         
         return new LoginResponse(token, UserResponse.fromUser(user));
     }

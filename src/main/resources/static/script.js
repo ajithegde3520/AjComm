@@ -26,8 +26,13 @@ async function handleRegister(e) {
         username: formData.get('username'),
         email: formData.get('email'),
         password: formData.get('password'),
+        firstName: formData.get('firstName'),
+        lastName: formData.get('lastName'),
+        phoneNumber: formData.get('phoneNumber') || null,
         role: formData.get('role')
     };
+
+    console.log('Sending registration data:', userData); // Debug log
 
     try {
         const response = await fetch(`${API_BASE_URL}/register`, {
@@ -38,6 +43,8 @@ async function handleRegister(e) {
             body: JSON.stringify(userData)
         });
 
+        console.log('Response status:', response.status); // Debug log
+
         if (response.ok) {
             const result = await response.json();
             showMessage('User registered successfully!', 'success');
@@ -46,9 +53,13 @@ async function handleRegister(e) {
             setTimeout(loadAllUsers, 1000);
         } else {
             const error = await response.text();
+            console.log('Error response:', error); // Debug log
+            console.log('Response headers:', response.headers); // Debug log
+            console.log('Response status text:', response.statusText); // Debug log
             showMessage(`Registration failed: ${error}`, 'error');
         }
     } catch (error) {
+        console.log('Exception:', error); // Debug log
         showMessage(`Error: ${error.message}`, 'error');
     }
 }
@@ -59,9 +70,11 @@ async function handleLogin(e) {
     
     const formData = new FormData(loginForm);
     const loginData = {
-        username: formData.get('username'),
+        usernameOrEmail: formData.get('username'),
         password: formData.get('password')
     };
+
+    console.log('Sending login data:', loginData); // Debug log
 
     try {
         const response = await fetch(`${API_BASE_URL}/login`, {
@@ -72,15 +85,19 @@ async function handleLogin(e) {
             body: JSON.stringify(loginData)
         });
 
+        console.log('Login response status:', response.status); // Debug log
+
         if (response.ok) {
             const result = await response.json();
             showLoginResult(`Login successful! Token: ${result.token.substring(0, 50)}...`, 'success');
             loginForm.reset();
         } else {
             const error = await response.text();
+            console.log('Login error response:', error); // Debug log
             showLoginResult(`Login failed: ${error}`, 'error');
         }
     } catch (error) {
+        console.log('Login exception:', error); // Debug log
         showLoginResult(`Error: ${error.message}`, 'error');
     }
 }
@@ -113,11 +130,14 @@ function displayUsers(users) {
 
     const usersHTML = users.map(user => `
         <div class="user-card">
-            <h3>${user.username}</h3>
+            <h3>${user.firstName} ${user.lastName}</h3>
             <div class="user-info">
                 <div><span>ID:</span> ${user.id}</div>
+                <div><span>Username:</span> ${user.username}</div>
                 <div><span>Email:</span> ${user.email}</div>
+                <div><span>Phone:</span> ${user.phoneNumber || 'N/A'}</div>
                 <div><span>Role:</span> ${user.role}</div>
+                <div><span>Status:</span> ${user.isActive ? 'Active' : 'Inactive'}</div>
             </div>
             <div class="user-actions">
                 <button class="btn btn-info btn-small" onclick="getUserById(${user.id})">View Details</button>
@@ -136,7 +156,7 @@ async function getUserById(id) {
         
         if (response.ok) {
             const user = await response.json();
-            alert(`User Details:\nID: ${user.id}\nUsername: ${user.username}\nEmail: ${user.email}\nRole: ${user.role}`);
+            alert(`User Details:\nID: ${user.id}\nName: ${user.firstName} ${user.lastName}\nUsername: ${user.username}\nEmail: ${user.email}\nPhone: ${user.phoneNumber || 'N/A'}\nRole: ${user.role}\nStatus: ${user.isActive ? 'Active' : 'Inactive'}`);
         } else {
             const error = await response.text();
             alert(`Error: ${error}`);

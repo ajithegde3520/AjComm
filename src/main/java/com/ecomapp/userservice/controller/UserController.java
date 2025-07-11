@@ -25,8 +25,15 @@ public class UserController {
     @Operation(summary = "Register a new user")
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
-        UserResponse userResponse = userService.registerUser(request);
-        return ResponseEntity.ok(userResponse);
+        System.out.println("Registration request received: " + request.getUsername() + ", " + request.getEmail());
+        try {
+            UserResponse userResponse = userService.registerUser(request);
+            System.out.println("User registered successfully: " + userResponse.getUsername());
+            return ResponseEntity.ok(userResponse);
+        } catch (Exception e) {
+            System.out.println("Registration failed: " + e.getMessage());
+            throw e;
+        }
     }
     
     @Operation(summary = "Login and get JWT token")
@@ -69,5 +76,13 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    // Temporary debug endpoint
+    @Operation(summary = "Debug: Check if user exists")
+    @GetMapping("/debug/check/{username}")
+    public ResponseEntity<String> checkUserExists(@PathVariable String username) {
+        boolean exists = userService.existsByUsername(username);
+        return ResponseEntity.ok("User '" + username + "' exists: " + exists);
     }
 } 

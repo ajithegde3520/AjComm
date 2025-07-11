@@ -44,7 +44,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/register", "/api/users/login", "/h2-console/**").permitAll()
+                .requestMatchers("/", "/index.html", "/styles.css", "/script.js", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/api/users/**", "/h2-console/**").permitAll() // Temporarily allow all user endpoints
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers.frameOptions().disable()) // for H2 console
