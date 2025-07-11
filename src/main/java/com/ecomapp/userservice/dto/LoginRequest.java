@@ -13,7 +13,7 @@ public class LoginRequest {
     // Default constructor
     public LoginRequest() {}
     
-    // Constructor with fields
+    // Constructor with fields.
     public LoginRequest(String usernameOrEmail, String password) {
         this.usernameOrEmail = usernameOrEmail;
         this.password = password;
