@@ -32,7 +32,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/user-microservice:${{ steps.vars.outputs.version }},${{ secrets.DOCKERHUB_USERNAME }}/user-microservice:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/user_service:${{ steps.vars.outputs.version }},${{ secrets.DOCKERHUB_USERNAME }}/user_service:latest
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }} 
