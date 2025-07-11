@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -27,6 +28,9 @@ public class SecurityConfig {
     
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
     
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -60,11 +64,19 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/index.html", "/styles.css", "/script.js", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/api/users/**", "/h2-console/**").permitAll() // Temporarily allow all user endpoints
+                .requestMatchers(
+                    "/api/users/register",
+                    "/api/users/login",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/index.html",
+                    "/styles.css",
+                    "/script.js"
+                ).permitAll()
                 .anyRequest().authenticated()
             )
-            .headers(headers -> headers.frameOptions().disable()) // for H2 console
+            .exceptionHandling(eh -> eh.accessDeniedHandler(accessDeniedHandler))
+            .headers(headers -> headers.frameOptions().disable())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
