@@ -5,13 +5,13 @@ WORKDIR /app
 
 # Copy Maven files and download dependencies first for better cache
 COPY pom.xml .
-RUN ./mvnw dependency:go-offline -B || true
+RUN mvn dependency:go-offline -B
 
 # Copy the rest of the source code
 COPY . .
 
 # Build the application
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 # ---- Runtime Stage ----
 FROM eclipse-temurin:17-jre-jammy
