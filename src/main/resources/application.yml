@@ -5,14 +5,10 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:h2:file:./userdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:postgres}
+    username: ${PGUSER:postgres}
+    password: ${PGPASSWORD:password}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,7 +16,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 jwt:
   secret: your-secret-key-here-make-it-very-long-and-secure-in-production
