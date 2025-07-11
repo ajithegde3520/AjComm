@@ -64,29 +64,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/api/users/register",
-                    "/api/users/login",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                    "/",
-                    "/index.html",
-                    "/static/**",
-                    "/public/**",
-                    "/resources/**",
-                    "/webjars/**",
-                    "/**/*.css",
-                    "/**/*.js",
-                    "/**/*.png",
-                    "/**/*.jpg",
-                    "/**/*.jpeg",
-                    "/**/*.gif",
-                    "/**/*.svg",
-                    "/**/*.ico"
-                ).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
-            .exceptionHandling(eh -> eh.accessDeniedHandler(accessDeniedHandler))
             .headers(headers -> headers.frameOptions().disable())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
